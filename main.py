@@ -18,7 +18,7 @@ from flask_mpesa import MpesaAPI
 from functools import wraps
 import qrcode
 import shutil
-import cv2
+#import cv2
 
 
 
@@ -78,7 +78,7 @@ def index():
                     if login_user['dep'] == 'mkuu':
                         session['loged_in'] = request.form['username']
                         return redirect(url_for('mkuu'))
-    return render_template('index.html')
+    return render_template('new_landing.html')
 @app.route('/login', methods=['POST','GET'])
 def login():
     session.pop('loged_in', None)
@@ -145,9 +145,10 @@ def reset_passw():
     
 @app.route('/db_err' , methods=['POST','GET']) 
 def db_err():
-    return render_template('db_err.html')   
     
-    return render_template('reset_passw.html')
+    
+    return render_template('db_err.html')   
+
 ip = socket. gethostbyname(socket. gethostname())
 ipst = str(ip)
 
@@ -270,165 +271,57 @@ def success():
 
 
 #the mkuu Application And Routes
-@app.route('/mkuu/' , methods = ["POST" , "GET"])
-def mkuu():
+@app.route('/services/' , methods = ["POST" , "GET"])
+def services():
     
     
-    return render_template('admin.html')
+    return render_template('services.html')
 
-@app.route('/add_phone/' , methods = ["POST" , "GET"])
-def add_phone():
-    now = datetime.now()
-    now_c = now.strftime("%Y %m %d %H %M %S ")
-    if request.method == 'POST':
-        
-        owner = request.form['owner']
-        
-        owner_number = request.form['number']
-        
-        brand = request.form['brand']
-        
-        model = request.form['model']
-        
-        date = now_c
-        
-        title = request.form['title']
-        
-        desc = request.form['desc']
-        
-        cause = request.form['cause']
-        
-        spec_id = md5_crypt.hash(owner_number)
-        
-        for_qr = spec_id[0:8]
-        
-        qrz = qrcode.make(for_qr)
-        qrz.save( spec_id + ".jpg")
-        
-        shutil.copyfile(spec_id + ".jpg" ,"./qrcode" )
-        
-        
-        phones.insert_one({"owner" : owner , "owner_number" : owner_number ,  "brand" :brand ,"model": model , "date" :date , "title" : title ,
-                           "desc" : desc , "cause" : cause , "status" : 0 , "spec_id" : spec_id , "notified" : 0
-                           })
-        return redirect(url_for('pending_phone'))
-        
-    return render_template('add_phone.html')
-
-@app.route('/pending_phone/' , methods = ["POST" , "GET"])
-def pending_phone():
-    pending = phones.find({"status" : 0})
-    if request.method == 'POST':
-        id = request.form['id']
-        phones.find_one_and_update({"spec_id":id} ,{ '$set' :  {"status": 1}}) 
-        
-        return redirect(url_for('done_phones'))
-
-    
-    return render_template('pending_phone.html' , phones = pending)
-
-@app.route('/done_phones' , methods =['POST','GET'])
-def done_phones():
-    done =  phones.find({"status" : 1})
-    if request.method == 'POST':
-        id = request.form['id']
-        de_no = phones.find_one({'spec_id' : id})
-        no = de_no['owner_number']
-        #sms sending logic here.
-        def send_sms(number):
-            pass
-        send_sms(no)
-        phones.find_one_and_update({"spec_id":id} ,{ '$set' :  {"notified": 1}}) 
-
-        return redirect(url_for('sent_notif'))
-         
-    return render_template('done_phones.html' ,  phone = done)
-
-@app.route('/sent_notif/' , methods =['POST','GET'])
-def sent_notif():
-    session.pop('phone', None)
-    sent = phones.find({"notified" : 1})
-    if request.method == 'POST':
-        id = request.form['id']
-        session['phone'] = id
-        return redirect(url_for('return_phone'))
-    
-    return render_template('sent_notif.html', phone = sent)
-
-
-@app.route('/return_phone/' , methods=['POST','GET'])
-def return_phone():
-    ident = session['phone']
-    the_phone = phones.find({"spec_id" : ident})
-
-    
-    return render_template('return_phone.html' , phone = the_phone , id = ident)
-
-@app.route('/add_admin_user/' , methods = ['POST','GET'])
-def add_admin_user():
-    if request.method == 'POST':
-        new_no  = request.form['phone']
-        
-        new_pass = "12345678"
-        
-        admin_ph = request.form['ad_phone']
-        
-        admin_passwd = request.form['passwd']
-        
-        users = mongo.db.accounts
-        
-        login_user = users.find_one({'phone' : admin_ph})  
-            
-        if login_user:
-            form_pass = admin_passwd.encode('utf-8')
-            hashed_pass = login_user['password']         
-            if Hash_passcode.verify(form_pass,hashed_pass):
-                users.insert_one({"phone" : new_no , "password" : new_pass , "dep" : "mkuu" })
-            else:
-                return("Bad Detail")
-        else:
-            return "Wrong Password"
-                
-
+@app.route('/tech_team/' , methods = ["POST" , "GET"])
+def tech_team():
     
     
-    return render_template('add_admin_user.html')
+    return render_template('tech_team.html')
 
-@app.route("/inventory/" ,methods = ["POST" , "GET"])
-def inventory():
-    def camera():
 
-        cam = cv2.VideoCapture(0)
-
-        cv2.namedWindow("test")
-
-        img_counter = 0
-
-        while True:
-            ret, frame = cam.read()
-            if not ret:
-                print("failed to grab frame")
-                break
-            cv2.imshow("test", frame)
-
-            k = cv2.waitKey(1)
-            if k%256 == 27:
-                # ESC pressed
-                print("Escape hit, closing...")
-                break
-            elif k%256 == 32:
-                # SPACE pressed
-                img_name = "opencv_frame_{}.png".format(img_counter)
-                cv2.imwrite(img_name, frame)
-                print("{} written!".format(img_name))
-                img_counter += 1
-
-        cam.release()
-
-        cv2.destroyAllWindows()
+@app.route('/solar/' , methods = ["POST" , "GET"])
+def solar():
     
     
-    return render_template('inventory.html')
+    return render_template('solar.html')
+
+
+@app.route('/help_center/' , methods = ["POST" , "GET"])
+def help_center():
+    
+    
+    return render_template('help_center.html')
+
+
+@app.route('/contact/' , methods = ["POST" , "GET"])
+def contact():
+    
+    
+    return render_template('contact.html')
+
+@app.route('/privacy_policy/' , methods = ["POST" , "GET"])
+def privacy_policy():
+    
+    
+    return render_template('privacy_policy.html')
+
+@app.route('/ict_term/' , methods = ["POST" , "GET"])
+def ict_term():
+    
+    
+    return render_template('ict_term.html')
+
+@app.route('/site_map/' , methods = ["POST" , "GET"])
+def site_map():
+    
+    
+    return render_template('site_map .html')
+
 
 if __name__ == '__main__':
     app.secret_key = 'private_tings'
