@@ -57,7 +57,7 @@ app.config['MONGO_URI'] = 'mongodb://localhost:27017/the_shop'
 mongo = PyMongo(app)
 #HASH sCHEMES
 Hash_passcode = CryptContext(schemes="sha256_crypt",sha256_crypt__min_rounds=131072)
-username_hash = CryptContext(schemes=["sha256_crypt","argon2"])
+username_hash = CryptContext(schemes=["sha256_crypt","des_crypt"])
 #databases
 users = mongo.db.users
 phones = mongo.db.phones
