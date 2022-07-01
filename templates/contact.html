@@ -1,22 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<title>Contact  </title>
-
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link href="{{ url_for('static', filename='css/main2.css') }}" rel="stylesheet">
-
-</head>
+{% extends "layout.html" %}
+{% block body %}
+<title>
+    Contact Us
+</title>
 
 <body>
 
+    <br>
+    <br><br>
+    <br>
+    <div class="contacts" align= "center">
+        +254-738296578  <a href="tel: +254-738296578"><br> <button>Call us </button></a>
+        <br>
+        <br>
+        +254-716040297 <a href="tel:  +254-716040297">
+            <br><button>Call us </button></a>
+    </div>
+    <br>
+    <br>
 
+    <div class="email_us" align= "center">
+        nasckofu@gmail.com <a href="nasckofu@gmail.com"><br> <button>Send Email </button></a>
+
+    </div>
 </body>
-
-    </html>
+{% endblock %}}
