@@ -53,7 +53,7 @@ def pop_session(x):
         
 
 app.config['MONGO_DBNAME'] = 'the_shop'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/the_shop'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/nascofu'
 mongo = PyMongo(app)
 #HASH sCHEMES
 Hash_passcode = CryptContext(schemes="sha256_crypt",sha256_crypt__min_rounds=131072)
