@@ -320,7 +320,7 @@ def ict_term():
 def site_map():
     
     
-    return render_template('site_map .html')
+    return render_template('site_map.html')
 
 
 if __name__ == '__main__':
